@@ -1,6 +1,7 @@
 ---
 title: "MAST30034 Assignment 1"
-author: "Bui Binh An Pham"
+author: "Bui Binh An Pham 
+        | Student ID: 1087397"
 output: pdf_document
 ---
 
@@ -225,6 +226,28 @@ write.csv(X, file="../data/data.csv", row.names=FALSE)
 ```
 
 The variance plot shows that the variance increases from the 300th variable (time-series) to 400th and 100th to the first. The variance is not constant throughout the time series, which violates the assumption for linear regression. Before fitting linear models, we need to transform the data.
+
+$TC*\Gamma_s$ and $\Gamma_t*SM$ exist when expanding the expression of X. However, these two terms should not be included in the linear model since they contain no extra information about the interaction between temporal and spatial sources that $\Gamma_t*\Gamma_s$ could not capture. Also, when taking expectation of X, these two terms are eliminated as $E(TC*\Gamma_s) = TC*E(\Gamma_s) = 0$ and $E(\Gamma_t*SM) = E(\Gamma_t)*SM = 0$. Furthermore, the error term in a linear model is assumed to follow normal distribution. However, this assumption will be violated if we keep $TC*\Gamma_s$ and $\Gamma_t*SM$ together with $\Gamma_t*\Gamma_s$ to account for the model error instead of just $\Gamma_t*\Gamma_s$. 
+
+```{r, echo=FALSE}
+par(mfrow=c(1,2), mar=c(2,3,3,3))
+# histogram of $\Gamma_t*\Gamma_s$
+hist(temporal_noise%*%spatial_noise, freq=FALSE, 
+     main=bquote(Gamma[t]*Gamma[s]))
+x = as.vector(temporal_noise%*%spatial_noise)
+xfit = seq(min(x),max(x),length=40)
+yfit = dnorm(xfit, mean=mean(x), sd=sd(x))
+lines(xfit, yfit, col="red")
+# histogram of $TC*\Gamma_s$ + $\Gamma_t*SM$ + $\Gamma_t*\Gamma_s$
+hist(X-TC%*%SM, freq=FALSE,
+     main=bquote(TC~"x"~Gamma[s] + Gamma[t]~"x"~SM + Gamma[t]*Gamma[s]))
+x = as.vector(X-TC%*%SM)
+xfit = seq(min(x),max(x),length=40)
+yfit = dnorm(xfit, mean=mean(x), sd=sd(x))
+lines(xfit, yfit, col="red")
+
+```
+
 
 ## Question 2: Data analyst, results visualization, and performance metrics
 
