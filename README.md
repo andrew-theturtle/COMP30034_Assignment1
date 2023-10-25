@@ -1,6 +1,4 @@
 # COMP30034 Assignment1
-- Student Name: Bui Binh An Pham
-- Student ID: 1087397
 
 # Dependencies
 - Language: R 4.1.1
